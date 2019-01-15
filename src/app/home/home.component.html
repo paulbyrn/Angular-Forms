@@ -1,0 +1,80 @@
+<h3 *ngIf="languages.length == 0">Loading...</h3>
+<div class="container" *ngIf="languages.length > 0">
+    <h3>Employee Form</h3>
+
+    <form #form="ngForm" (submit)="submitForm(form)" novalidate>
+
+        <div class="form-group">
+            <label>First Name</label>
+            <input #fName type="text" required class="form-control" name="firstName" [(ngModel)]="model.firstName">
+        </div>
+
+        <!-- fName is a template reference variable for the input control -->
+        <h3>Classes</h3>
+        <h4>{{ fName.className }}</h4>
+
+        <!-- Alternate syntax for two way binding -->
+        <div class="form-group" [class.has-error]="mName.invalid && mName.touched">
+            <label class="control-label">Middle Name</label>
+            <input #mName="ngModel" type="text" required class="form-control" name="middleName" [ngModel]="model.middleName"
+                (ngModelChange)="model.middleName=$event">
+            <div *ngIf="mName.invalid && mName.touched" class="alert alert-danger">
+                Middle name is required
+            </div>
+        </div>
+
+        <!-- mName is a template reference variable for the model -->
+        <h3>Model properties</h3>
+        <h4>untouched = {{ mName.untouched }}</h4>
+        <h4>touched = {{ mName.touched }}</h4>
+        <h4>pristine = {{ mName.pristine }}</h4>
+        <h4>dirty = {{ mName.dirty }}</h4>
+        <h4>valid = {{ mName.valid }}</h4>
+        <h4>invalid = {{ mName.invalid }}</h4>
+
+        <!-- Call a function -->
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" required class="form-control" name="lastName" [ngModel]="model.lastName" (ngModelChange)="model.lastNameToUpper($event)">
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="is-full-time" [(ngModel)]="model.isFullTime"> Full Time Employee
+            </label>
+        </div>
+
+        <label>Payment Type</label>
+        <div class="radio">
+            <label>
+                <input type="radio" name="paymentType" value="w2" checked [(ngModel)]="model.paymentType"> W2
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="paymentType" value="1099" [(ngModel)]="model.paymentType"> 1099
+            </label>
+        </div>
+
+        <div class="form-group" [class.has-error]="hasPrimaryLanguageError">
+            <label class="control-label">Primary Language</label>
+            <select #pLang class="form-control" name="primaryLanguage" (blur)="validatePrimaryLanguage(pLang.value)"
+                (change)="validatePrimaryLanguage(pLang.value)" [(ngModel)]="model.primaryLanguage">
+                <option value="default">Select a language...</option>
+                <option *ngFor="let lang of languages">
+                    {{ lang }}
+                </option>
+            </select>
+        </div>
+        <br>
+        <h4>Lang {{ pLang.className }}</h4>
+        <h4>Error {{ hasPrimaryLanguageError }}</h4>
+
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">OK</button>
+    </form>
+
+    Model: {{ model | json }}
+    <br>
+    Angular: {{ form.value | json }}
+
+</div>
